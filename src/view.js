@@ -6,7 +6,6 @@ const view = (state) => {
   const scoreTag = document.querySelector('#score');
 
   const watchedState = onChange(state, (path, value) => {
-    console.log('watched state path: ', path, 'value: ', value)
     if (path === 'render') {
       switch (value) {
         case 'start':

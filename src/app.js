@@ -2,12 +2,15 @@
 import './main.css';
 import shapes from './shapes.js';
 import view from './view.js';
-import { getRndInd } from './utilityFNs.js';
+import { getRndInd, createCell } from './utilityFNs.js';
 
-let num = 5;
-num += 1;
-console.log(num);
 // STATE OF THE GAME
+
+for (let i = 0; i < 200; i += 1) {
+  const cell = createCell(i);
+  document.querySelector('.field').append(cell);
+}
+
 const state = {
   render: null,
   getShape: () => shapes[getRndInd(shapes.length)],

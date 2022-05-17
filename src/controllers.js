@@ -1,21 +1,29 @@
 import { renderMessage } from './render.js';
-import { clockTurn } from './utilityFNs.js';
+import { clockTurn, getEmptyShapeColls, getTakenCells } from './utilityFNs.js';
 
 const loadControllers = (state, watchedState) => {
   const submitButton = document.querySelector('.chat-submit');
   const messageContainer = document.querySelector('.chat-messages');
+  const invalidCells = ['taken', 'edge']
 
   const keyMaps = {
     ArrowLeft: () => {
-      const simplePosition = state.shapePosition.toString().slice(-1);
-      if (Number(simplePosition) - 1 < -2) return; // < 0
-      state.shapePosition -= 1
+      const emptyColls = getEmptyShapeColls(state.currentShape, 'left');
+      const shapeEdge = state.shapePosition + emptyColls
+
+      if (state.gameField[shapeEdge].classList.contains('edge')) return;
+      if (state.gameField[shapeEdge - 1].classList.contains('taken')) return;
+      state.shapePosition -= 1;
     },
     ArrowUp: () => state.currentShape = clockTurn(state.currentShape),
     ArrowRight: () => {
-      const simplePosition = state.shapePosition.toString().slice(-1);
-      if (Number(simplePosition) + 1 > 9) return; // < 7
-      state.shapePosition += 1
+      const emptyColls = getEmptyShapeColls(state.currentShape, 'right');
+      const shapeEdge = state.shapePosition + state.currentShape.length - 1 - emptyColls;
+      const takenCells = getTakenCells(state.currentShape, shapeEdge, 'right', emptyColls);
+
+      if (state.gameField[shapeEdge].classList.contains('edge')) return;
+      if (takenCells.some((cell) => state.gameField[cell].classList.contains('taken'))) return;
+      state.shapePosition += 1; 
     },
     ArrowDown: () => state.fallSpeed = 50,
     downUp: () => state.fallSpeed = 500,
