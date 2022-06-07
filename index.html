@@ -5,34 +5,19 @@
         <title>Tetris Web App</title>
     </head>
     <body>
-        <div class="main-container">
-            <div class="chat">
-                <i class="chat-header">Chat:</i>
-                <div class="chat-room">
-                    <ul class="chat-messages"></ul>
-                </div>
-                <div class="chat-footer">
-                    <input type="text" class="chat-input" placeholder="under construction...">
-                    <button class="chat-submit">> Send</button>
-                </div>
-            </div>
-            <div class="field">
+        <div class="main-container"></div>
+        <div class="init modal" style="display: hidden">
+            <div>
+                <h4>SINGLEPLAYER</h4>
+                <button class="btn" id="singleplayer">Start Game</button>
             </div>
             <div>
-                <div class="menu sc">
-                    <span id="score">Score: 0</span>
+                <h4>MULTIPLAYER</h4>
+                <div class="init-form">
+                    <input type="text" placeholder="Enter Lobby ID" id="roomId" maxlength="5">
+                    <button class="btn" id="joinGame">Join Lobby</button>
                 </div>
-                <div class="menu m-t">
-                    <button id="startButton">START</button>
-                    <button id="stopButton">STOP</button>
-                </div>
-                <div class="menu m-t">
-                    <h3>Controls:</h3>
-                    <span>[←] to move left</span>
-                    <span>[→] to move left</span>
-                    <span>[↑] spin it!</span>
-                    <span>[↓] speed it up!</span>
-                </div>
+                <button class="btn" id="newGame">Start new session</button>
             </div>
         </div>
     </body>

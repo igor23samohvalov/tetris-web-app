@@ -1,9 +1,18 @@
-import { renderMessage } from './render.js';
 import { clockTurn, getEmptyShapeColls, getTakenCells } from './utilityFNs.js';
 
 const loadControllers = (state, watchedState) => {
-  const submitButton = document.querySelector('.chat-submit');
-  const messageContainer = document.querySelector('.chat-messages');
+  if (state.layout === 'multiplayer') {
+    const submitButton = document.querySelector('.chat-submit');
+    const chatInput = document.querySelector('.chat-input');
+
+    submitButton.addEventListener('click', () => {
+
+      state.socket.emit('newMessage', chatInput.value);
+      // make validation
+      chatInput.value = '';
+    });
+  }
+  
   const invalidCells = ['taken', 'edge']
 
   const keyMaps = {
@@ -25,8 +34,8 @@ const loadControllers = (state, watchedState) => {
       if (takenCells.some((cell) => state.gameField[cell].classList.contains('taken'))) return;
       state.shapePosition += 1; 
     },
-    ArrowDown: () => state.fallSpeed = 50,
-    downUp: () => state.fallSpeed = 500,
+    ArrowDown: () => state.fallSpeed = 30,
+    downUp: () => state.fallSpeed = 400,
   };
 
   document.onkeydown = (e) => {
@@ -36,7 +45,7 @@ const loadControllers = (state, watchedState) => {
     if (e.key === 'ArrowDown') keyMaps['downUp']();
   }
 
-  submitButton.addEventListener('click', () => messageContainer.append(renderMessage()));
+
 
   document.querySelector('#startButton').addEventListener('click', () => {
     watchedState.render = state.render ? 'unpause' : 'start'

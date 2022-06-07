@@ -1,25 +1,65 @@
 body {
   margin: 0;
 }
+
 .main-container {
   display: flex;
+  flex-wrap: wrap;
   width: 100vw;
   height: 100vh;
   justify-content: center;
   align-items: center;
+
   background-color: #f2eee4;
 }
 
-.chat {
+.menu-container {
+  display: flex;
+  width: 100%;
+  height: 35%;
+  justify-content: center;
+}
+.menu-container > * {
+  margin-right: 30px;
+}
+
+.menu {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: center;
+  align-items: center; 
   border: 3px dashed #333;
-  margin-right: 30px;
-  width: 300px;
-  height: 300px;
+  border-radius: 5px;
   padding: 10px;
+  width: 150px;
+  height: 120px;
+}
+
+.menu:last-of-type {
+  padding-left: 40px;
+  padding-top: 0;
+  justify-content: center;
+  align-items: flex-start;
+  width: 120px;
+  height: 160px;
+}
+
+.chat {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr;
+  grid-template-rows: 0.1fr 1fr 0.2fr;
+  grid-gap: 10px;
+  border: 3px dashed #333;
+  width: 30%;
+  height: 85%;
+
+  text-align: center;
+  padding: 10px;
+}
+
+.multiplayer {
+  flex-direction: row;
+  align-items: flex-start;
 }
 
 .chat-header {
@@ -28,20 +68,35 @@ body {
 }
 
 .chat-room {
-  width: 90%;
-  height: 60%;
+  margin: 5px;
+  width: 1;
+  height: 1;
   border: 2px solid #333;
+  overflow: auto;
+  padding: 10px;
+
+  text-align: left;
+}
+
+.chat-message {
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 8px;
 }
 
 .chat-footer {
+  margin: 5px;
+  grid-column-start: 2;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  width: 90%;
 }
 
 .chat-input {
   border-radius: 5px;
-  width: 50%;
+  height: 100%;
+  width: 60%;
   background-color: transparent;
   padding-left: 10px;
   padding-right: 10px;
@@ -57,52 +112,41 @@ body {
   height: 40px;
 }
 
-.field {
+.fields-container {
+  width: 100%;
+  height: 65%;
   display: flex;
-  flex-wrap: wrap;
-  width: 300px;
-  height: 700px;
+  justify-content: center;
+  align-items: center;
+}
+
+.field-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -30px;
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.field {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(25, 1fr);
+  width: 20%;
+  height: 85%;
+
+  margin-right: 30px;
   background-color: #333;
 }
 
 .cell {
   border: 1px solid #fff;
-
-  width: 28px;
-  height: 33px;
-}
-
-.bg-cyan {
-  background-color: #369299;
-}
-.bg-yellow {
-  background-color: #FFFF01;
-}
-
-.taken {
-  background-color: #E11B1B;
-}
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center; 
-  margin-left: 30px;
-  border: 3px dashed #333;
-  border-radius: 5px;
-  padding: 10px;
-  width: 150px;
-  height: 120px;
-}
-
-.menu:last-of-type {
-  padding-left: 40px;
-  padding-top: 0;
-  justify-content: center;
-  align-items: flex-start;
-  width: 120px;
-  height: 160px;
 }
 
 #startButton {
@@ -131,7 +175,7 @@ body {
   margin-top: 15px;
 }
 
-#score {
+.score {
   font-size: 24px;
   font-style: italic;
   font-weight: 700;
@@ -139,6 +183,17 @@ body {
 
 .menu.sc {
   height: 40px;
+}
+
+.room {
+  height: 40px;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.room > p {
+  margin: 0;
 }
 
 .end-game {
@@ -149,9 +204,10 @@ body {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
+  text-align: center;
   background-color: #333;
-  width: 300px;
-  height: 150px;
+  width: 400px;
+  height: 180px;
   border: 3px double #fff;
   border-radius: 50px;
   color: #fff;
@@ -172,4 +228,133 @@ body {
 
 .retry-button:hover {
   cursor: pointer;
+}
+
+.btn {
+  border-radius: 30px;
+  width: 120px;
+  height: 40px;
+  background-color: transparent;
+  color: #fff;
+  border: 2px dashed #fff;
+  margin: 5px;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #f2eee4;
+  color: #765F45;
+  cursor: pointer;
+}
+
+#joinGame {
+  border-radius: 0 30px 30px 0;
+  margin-top: 2px;
+  width: 30%;
+  margin-right: 0;
+}
+
+#newGame {
+  width: 75%;
+}
+
+.modal {
+  position: absolute;
+  top: 25%;
+  left: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+
+  width: 300px;
+  height: 300px;
+  padding: 10px;
+
+  background-color: #765F45;
+  color: #fff;
+  border-radius: 30px;
+}
+
+.modal p {
+  text-align: left;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+button:disabled:hover {
+  background-color: transparent;
+  color: #fff;
+}
+
+.init {
+  justify-content: space-evenly;
+}
+
+.init h4 {
+  margin-bottom: 8px;
+}
+
+.init > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.init-form {
+  display: flex;
+  justify-content: center;
+}
+
+.init input {
+  border-radius: 15px 0 0 15px;
+  height: 30px;
+  padding: 5px;
+  width: 40%;
+}
+
+.modal h3 {
+  margin-bottom: 0;
+}
+
+.lobby > div {
+  width: 90%;
+}
+
+.lobby-players > div {
+  display: flex;
+  justify-content: space-around;
+  margin: 5px;
+}
+
+.lobby-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.block {
+  display: block;
+}
+
+.none {
+  display: none;
+}
+
+.bg-cyan {
+  background-color: #369299;
+}
+.bg-yellow {
+  background-color: #FFFF01;
+}
+
+.taken {
+  background-color: #E11B1B;
 }
