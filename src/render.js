@@ -11,7 +11,7 @@ const renderCell = (i) => {
   return div;
 }
 
-const renderEndGame = ({ winner, layout }) => {
+const renderEndGame = ({ winner, layout, score }) => {
   const div = document.createElement('div');
   div.classList.add('end-game');
 
@@ -19,12 +19,12 @@ const renderEndGame = ({ winner, layout }) => {
 
   switch (layout) {
     case 'multiplayer':
-      const score = document.querySelector(`.score-${winner}`).textContent;
-      span.textContent = `Winner is Player ${winner}. ${score}`;
+      if (winner === 'draw') span.textContent = `Nobody won. It's a draw`
+      else span.textContent = `Winner is Player ${winner.id}. Final score: ${winner.score}`;
       break;
     case 'singleplayer':
     default:
-      span.textContent = `Your final score: ${state.score}`;
+      span.textContent = `Your final score: ${score}`;
       break;
   }
   
@@ -40,13 +40,13 @@ const renderEndGame = ({ winner, layout }) => {
 }
 
 const startRender = (state, watchedState) => {
-  const { shapePosition, currentShape } = state;
+  const { shapePosition, currentShape, layout } = state;
   const tempCellsContainer = [];
   if (isGameOver(state.gameField)) {
     switch (state.layout) {
       case 'multiplayer':
         watchedState.render = 'pause';
-        state.socket.emit('gameOver?', state.player);
+        state.socket.emit('gameOver?', { id: state.player, score: state.score });
         document.querySelector('#startButton').disabled = true;
         return;
       case 'singleplayer':
@@ -74,7 +74,9 @@ const startRender = (state, watchedState) => {
       }
     });
   });
-  watchedState.shapeCells = tempCellsContainer;
+  if (layout === 'multiplayer') {
+    watchedState.shapeCells = tempCellsContainer;
+  }
   // переделать через watched state
   switch (state.render) {
     case 'start':
@@ -99,7 +101,7 @@ const stopRender = (state, watchedState) => {
       tempTakenContainer.push(i);
     }
   });
-  if (tempTakenContainer.length !== 0) {
+  if (tempTakenContainer.length !== 0 && state.layout === 'multiplayer') {
     watchedState.takenCells.push(...tempTakenContainer);
   }
 
@@ -131,13 +133,14 @@ const stopRender = (state, watchedState) => {
     state.gameField.forEach((cell, i) => {
       if (cell.classList.contains('taken')) newTakenCells.push(i);
     })
-
-    state.socket.emit('newLine', { 
-      cells: cellsToDelete,
-      id: state.player,
-      score: state.score,
-    });
-    watchedState.takenCells = newTakenCells;
+    if (state.layout === 'multiplayer') {
+      state.socket.emit('newLine', { 
+        cells: cellsToDelete,
+        id: state.player,
+        score: state.score,
+      });
+      watchedState.takenCells = newTakenCells;
+    }
   });
 
   watchedState.render = 'start';
@@ -145,13 +148,15 @@ const stopRender = (state, watchedState) => {
 
 const renderLayout = (mode) => {
   const mainContainer = document.querySelector('.main-container');
+  const fieldsContainer = document.querySelector('.fields-container');
+
   switch (mode) {
     case 'multiplayer':
       mainContainer.append(multiplayerMenu());
       return;
     case 'singleplayer':
     default:
-      mainContainer.append(menu());
+      fieldsContainer.append(menu('menu-sp'));
       return;
   }
 }

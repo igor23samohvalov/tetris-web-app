@@ -1,5 +1,7 @@
 install:
 	npm ci
+start heroku:
+	herocu local -f Procfile.dev
 start:
 	npm run start
 start-backend:

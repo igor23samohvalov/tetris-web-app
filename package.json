@@ -1,7 +1,11 @@
 {
   "name": "tetris-vanilla-js",
   "version": "1.0.0",
-  "description": "tetris-vanilla-js",
+  "engines": {
+    "node": "v17.9.0",
+    "npm": "8.10.0"
+  },
+  "description": "multiplayer-tetris-vanilla-js",
   "main": ".src/app.js",
   "type": "module",
   "scripts": {
@@ -30,6 +34,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "on-change": "^4.0.0",
     "socket.io": "^4.5.1",

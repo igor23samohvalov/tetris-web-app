@@ -10,6 +10,9 @@ import createFieldsContainer from './components/fieldsContainer.js';
 import createField from './components/field.js';
 import loadLobbyControllers from './lobbyControllers.js';
 
+const isProduction = process.env.NODE_ENV == 'production';
+const isDevelopment = !isProduction;
+const devHost = isDevelopment ? 'http://localhost:3000' : '';
 
 let PLAYER;
 
@@ -41,7 +44,7 @@ const lobbyProxy = onChange(lobbyState, (path, value) => {
 })
 
 // state buiilder
-const buildState = (gameMode, field, player = '', socket = '') => ({
+const buildState = (gameMode, field, player = 1, socket = '') => ({
   render: null,
   getShape: () => shapes[getRndInd(shapes.length)],
   currentShape: shapes[getRndInd(shapes.length)],
@@ -61,16 +64,20 @@ const buildState = (gameMode, field, player = '', socket = '') => ({
 
 // singleplayer start listener
 document.querySelector('#singleplayer').addEventListener('click', () => {
-  const field = createField(1);
-  container.append(field);
+  socket.disconnect();
 
+  const fieldsContainer = createFieldsContainer();
+  container.append(fieldsContainer);
+  const field = createField(1, 'singleplayer');
+  fieldsContainer.append(field);
+  
   const state = buildState('singleplayer', field);
   view(state);
 
   document.querySelector('.init').style.display = 'none';
 })
 
-const socket = io('http://localhost:3000');
+const socket = io(devHost);
 socket.on('connect', () => {
   console.log('connected to the socket')
 })
@@ -124,7 +131,7 @@ socket.on('loadGame', (players) => {
   container.append(fieldsContainer);
 
   players.forEach((player) => {
-    const field = createField(player);
+    const field = createField(player, 'multiplayer');
     fieldsContainer.append(field);
   
     if (player === PLAYER) {

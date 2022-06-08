@@ -1,92 +1,111 @@
 import express from 'express';
 import { Server } from 'socket.io';
 import http from 'http';
+import cors from 'cors';
 import { makeid } from '../utilityFNs.js';
 
+const isProduction = process.env.NODE_ENV == 'production';
+const devHost = 'http://localhost:8080';
+const isDevelopment = !isProduction;
+
 const app = express();
+app.use(cors());
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:8080"
+    origin: isDevelopment ? devHost : '',
   }
 });
 
-const state = {
-  roomId: null,
+const state = {};
+
+const buildRoomState = (roomId) => ({
+  roomId,
   players: [],
   messages: [],
   ready: [],
   losers: [],
-}
+  winner: undefined,
+})
 
 io.on('connection', (socket) => {
   console.log(socket.id, ' connected');
 
-  socket.on('newLobby', (msg) => {
-    // STATE INIT
-    state.roomId = null;
-    state.players = [];
-    state.messages = [];
-    state.ready = [];
-    state.losers = [];
+  socket.on('newLobby', () => {
+    const roomId = makeid(5);
+    state[roomId] = buildRoomState(roomId);
 
-    // ROOM INIT
-    state.roomId = makeid(5);
-    socket.join(state.roomId)
+    socket.join(roomId)
     socket.number = 1;
-    state.players.push(socket.number);
-  
-    socket.emit('newLobby', state);
+    socket.roomId = roomId;
+    state[roomId].players.push(socket.number);
 
+    socket.emit('newLobby', state[roomId]);
   })
 
   socket.on('joinLobby', ({msg, roomId}) => {
     console.log(msg, roomId);
+    socket.roomId = roomId;
     handleJoinGame(roomId, socket);
   })
   socket.on('playerReady', ({ready, player}) => {
-    if (ready) state.ready.push(player)
-    else state.ready = state.ready.filter((p) => p !== player)
+    const { roomId } = socket;
+  
+    if (ready) state[roomId].ready.push(player)
+    else state[roomId].ready = state[roomId].ready.filter((p) => p !== player)
 
-    io.to(state.roomId).emit('playerReady', state.ready);
+    io.to(state[roomId].roomId).emit('playerReady', state[roomId].ready);
   })
 
   socket.on('loadGame', () => {
-    io.to(state.roomId).emit('loadGame', state.players);
+    const { roomId } = socket;
+  
+    io.to(state[roomId].roomId).emit('loadGame', state[roomId].players);
   })
 
   socket.on('newTurn', (data) => {
-    socket.broadcast.to(state.roomId).emit('newTurn', data);
+    const { roomId } = socket;
+  
+    socket.broadcast.to(state[roomId].roomId).emit('newTurn', data);
   })
 
   socket.on('newLine', (data) => {
-    socket.broadcast.to(state.roomId).emit('newLine', data);
+    const { roomId } = socket;
+  
+    socket.broadcast.to(state[roomId].roomId).emit('newLine', data);
   })
 
   socket.on('newMessage', (message) => {
-    state.messages.push(message);
-    console.log('message on server', message)
-    io.to(state.roomId).emit('newMessage', message)
+    const { roomId } = socket;
+
+    state[roomId].messages.push(message);
+    io.to(state[roomId].roomId).emit('newMessage', message)
   })
 
-  socket.on('gameOver?', (id) => {
-    state.losers.push(id);
-    if (state.players.length - state.losers.length === 1) {
-      const [winner] = state.players.filter((p, _, array) => {
-        return state.losers.indexOf(array) !== -1;
-      })
-      io.to(state.roomId).emit('gameOver', winner);
+  socket.on('gameOver?', ({ id, score }) => {
+    const { roomId } = socket;
+  
+    state[roomId].losers.push(id);
+  
+    if (!state[roomId].winner) state[roomId].winner = { id, score }
+    else if (score > state[roomId].winner.score) state[roomId].winner = { id, score }
+    else if (score === state[roomId].winner.score) state[roomId].winner = 'draw'
+
+    if (state[roomId].players.length === state[roomId].losers.length) {
+      io.to(state[roomId].roomId).emit('gameOver', state[roomId].winner);
     }
   })
 
   socket.on('leaveGame', (id) => {
+    const { roomId } = socket;
     console.log(`player${id} left the game`);
 
-    state.players = state.players.filter((p) => p !== id);
-    state.ready = state.ready.filter((p) => p !== id);
+    state[roomId].players = state[roomId].players.filter((p) => p !== id);
+    state[roomId].ready = state[roomId].ready.filter((p) => p !== id);
   
-    socket.broadcast.emit('leaveGame', state);
-    socket.leave(state.roomId);  
+    socket.broadcast.to(state[roomId].roomId).emit('leaveGame', state[roomId]);
+    socket.leave(state[roomId].roomId);  
   })
 
   socket.on('disconnect', () => {
@@ -94,9 +113,7 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
-});
+server.listen(3000, () => console.log('server is up'));
 
 function handleJoinGame(roomId, socket) {
   const room = io.of("/").adapter.rooms.get(roomId);
@@ -116,9 +133,9 @@ function handleJoinGame(roomId, socket) {
   }
 
   socket.join(roomId);
-
   socket.number = numClients + 1;
-  state.players.push(socket.number);
 
-  io.to(state.roomId).emit('newPlayerJoined', { roomId, players: state.players });
+  state[roomId].players.push(socket.number);
+
+  io.to(state[roomId].roomId).emit('newPlayerJoined', { roomId, players: state[roomId].players });
 }

@@ -10,6 +10,7 @@ import {
 
 const view = (state) => {
   renderLayout(state.layout);
+  console.log(state.player)
   const scoreTag = document.querySelector(`.score-${state.player}`);
 
   const watchedState = onChange(state, (path, value) => {
@@ -51,42 +52,49 @@ const view = (state) => {
       })
     }
   })
-  // socket message listener
-  state.socket.on('newMessage', (msg) => {
-    watchedState.messages.push(msg);
-  });
-  // socket turn listener
-  state.socket.on('newTurn', ({ className, id, cells }) => {
-    const playersField = document.querySelector(`#field${id}`);
-    const playersCells = Array.from(playersField.querySelectorAll('.cell'));
-
-    switch(className) {
-      case 'taken':
-        cells.forEach((cell) => playersCells[cell].classList.add(className));
-        break;
-      case 'bg-cyan':
-      default:
-        playersCells.forEach((cell) => cell.classList.remove(className));
-        cells.forEach((cell) => playersCells[cell].classList.add(className));
-        break;
-    }
-  });
-  state.socket.on('newLine', ({ cells, id, score }) => {
-    const playersField = document.querySelector(`#field${id}`);
-    const playersCells = Array.from(playersField.querySelectorAll('.cell'));
-
-    cells.forEach((cell, i) => {
-      playersCells[cell].remove();
-      playersField.prepend(renderCell(i))
+  if (state.layout === 'multiplayer') {
+    // socket message listener
+    state.socket.on('newMessage', (msg) => {
+      watchedState.messages.push(msg);
     });
-    document.querySelector(`.score-${id}`).textContent = `Score: ${score}`;
-  })
-  state.socket.on('gameOver', (id) => {
-    console.log('this is winners id: ', id);
-    state.winner = id;
-    watchedState.render = 'pause';
-    watchedState.render = 'finish';
-  })
+
+    // socket turn listeners
+    state.socket.on('newTurn', ({ className, id, cells }) => {
+      const playersField = document.querySelector(`#field${id}`);
+      const playersCells = Array.from(playersField.querySelectorAll('.cell'));
+
+      switch(className) {
+        case 'taken':
+          cells.forEach((cell) => playersCells[cell].classList.add(className));
+          break;
+        case 'bg-cyan':
+        default:
+          playersCells.forEach((cell) => cell.classList.remove(className));
+          cells.forEach((cell) => playersCells[cell].classList.add(className));
+          break;
+      }
+    });
+
+    state.socket.on('newLine', ({ cells, id, score }) => {
+      const playersField = document.querySelector(`#field${id}`);
+      const playersCells = Array.from(playersField.querySelectorAll('.cell'));
+
+      cells.forEach((cell, i) => {
+        playersCells[cell].remove();
+        playersField.prepend(renderCell(i))
+      });
+      document.querySelector(`.score-${id}`).textContent = `Score: ${score}`;
+    })
+
+    // socket gameOver listener
+    state.socket.on('gameOver', (winner) => {
+      console.log('this is winners id: ', winner);
+      state.winner = winner;
+      watchedState.render = 'pause';
+      watchedState.render = 'finish';
+    })
+  }
+ 
   loadControllers(state, watchedState);
 }
 

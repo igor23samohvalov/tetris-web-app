@@ -23,6 +23,11 @@ body {
   margin-right: 30px;
 }
 
+.menu-sp {
+  flex-direction: column;
+  width: max-content;
+}
+
 .menu {
   display: flex;
   flex-direction: column;
@@ -261,7 +266,7 @@ body {
 .modal {
   position: absolute;
   top: 25%;
-  left: 45%;
+  left: 40%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
