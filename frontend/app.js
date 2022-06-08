@@ -19,6 +19,7 @@ let PLAYER;
 const newGame = document.querySelector('#newGame');
 const joinGame = document.querySelector('#joinGame');
 const roomIdinput = document.querySelector('#roomId');
+const usernameInput = document.querySelector('#username');
 const container = document.querySelector('.main-container');
 
 const lobbyState = {
@@ -44,7 +45,7 @@ const lobbyProxy = onChange(lobbyState, (path, value) => {
 })
 
 // state buiilder
-const buildState = (gameMode, field, player = 1, socket = '') => ({
+const buildState = (gameMode, field, player = 1, socket = '', players = []) => ({
   render: null,
   getShape: () => shapes[getRndInd(shapes.length)],
   currentShape: shapes[getRndInd(shapes.length)],
@@ -57,6 +58,7 @@ const buildState = (gameMode, field, player = 1, socket = '') => ({
   layout: gameMode,
   fieldContainer: field,
   player,
+  players,
   shapeCells: [],
   takenCells: [],
   winner: null,
@@ -83,11 +85,12 @@ socket.on('connect', () => {
 })
 
 // starting multiplayer
-newGame.addEventListener('click', () => {
-  socket.emit('newLobby', 'multiplayer initialize game request');
+newGame.addEventListener('click', (e) => {
+  e.preventDefault();
+  socket.emit('newLobby', usernameInput.value);
 })
 socket.on('newLobby', ({ roomId, players }) => {
-  PLAYER = 1;
+  PLAYER = players[0];
 
   document.querySelector('.init').style.display = 'none';
   document.body.append(lobby(roomId, 'block'));
@@ -102,19 +105,20 @@ socket.on('tooManyPlayers', () => console.log('game room is FULL'));
 
 // another players connection listeners
   // outcome
-joinGame.addEventListener('click', () => {
-  socket.emit('joinLobby', { 
-    msg: 'another player requests to join the room: ',
+joinGame.addEventListener('click', (e) => {
+  e.preventDefault();
+  socket.emit('joinLobby', {
     roomId: roomIdinput.value,
+    profile: usernameInput.value,
   });
 })
   // income
-socket.on('newPlayerJoined', ({ roomId, players }) => {
+socket.on('newPlayerJoined', ({ roomId, players, profile }) => {
   document.querySelector('.init').style.display = 'none';
 
   if (!PLAYER) {
     document.body.append(lobby(roomId, 'none'))
-    PLAYER = players.length
+    PLAYER = profile;
     loadLobbyControllers(PLAYER, socket);
   }
 
@@ -133,15 +137,16 @@ socket.on('loadGame', (players) => {
   players.forEach((player) => {
     const field = createField(player, 'multiplayer');
     fieldsContainer.append(field);
-  
+
     if (player === PLAYER) {
-      const state = buildState('multiplayer', field, PLAYER, socket);
+      const state = buildState('multiplayer', field, PLAYER, socket, players);
       view(state);
     }
   });
 })
 
 socket.on('leaveGame', ({ ready, players }) => {
+  console.log(ready, players)
   lobbyProxy.players = players;
   lobbyProxy.ready = ready;
 })

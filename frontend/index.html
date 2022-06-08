@@ -8,16 +8,17 @@
         <div class="main-container"></div>
         <div class="init modal" style="display: hidden">
             <div>
-                <h4>SINGLEPLAYER</h4>
+                <h3>SINGLEPLAYER</h3>
                 <button class="btn" id="singleplayer">Start Game</button>
             </div>
             <div>
-                <h4>MULTIPLAYER</h4>
-                <div class="init-form">
+                <h3>MULTIPLAYER</h3>
+                <form class="init-form">
                     <input type="text" placeholder="Enter Lobby ID" id="roomId" maxlength="5">
+                    <input type="text" placeholder="Enter Username" id="username" maxlength="10">
                     <button class="btn" id="joinGame">Join Lobby</button>
-                </div>
-                <button class="btn" id="newGame">Start new session</button>
+                    <button class="btn" id="newGame">Start new session</button>
+                </form>
             </div>
         </div>
     </body>

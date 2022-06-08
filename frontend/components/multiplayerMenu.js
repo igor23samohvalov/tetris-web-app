@@ -1,16 +1,17 @@
-export default () => {
+export default (players) => {
   const div = document.createElement('div');
   div.classList.add('menu-container', 'multiplayer');
+  const elementPlayers = players.map((p) => `<p>${p}</p>`);
   div.innerHTML = `
     <div class="chat">
       <i class="chat-header">Players:</i>
       <i class="chat-header">Chat:</i>
-      <div class="chat-users"></div>
+      <div class="chat-users">${elementPlayers.join('')}</div>
       <div class="chat-room"></div>
-      <div class="chat-footer">
-          <input type="text" class="chat-input" placeholder="Go ahead">
-          <button class="chat-submit">> Send</button>
-      </div>
+      <form class="chat-footer">
+          <input type="text" class="chat-input" placeholder="Go ahead" name="message" minlength="1">
+          <button class="chat-submit" type="submit">> Send</button>
+      </form>
     </div>
     <div class="menu">
         <button id="startButton">START</button>
@@ -24,5 +25,6 @@ export default () => {
         <span>[↓] speed it up!</span>
     </div>
   `;
+
   return div;
 };

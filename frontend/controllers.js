@@ -5,10 +5,15 @@ const loadControllers = (state, watchedState) => {
     const submitButton = document.querySelector('.chat-submit');
     const chatInput = document.querySelector('.chat-input');
 
-    submitButton.addEventListener('click', () => {
+    submitButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      // if (chatInput.value.length === 0) return;
+    
+      state.socket.emit('newMessage', {
+        message: chatInput.value,
+        player: state.player,
+      });
 
-      state.socket.emit('newMessage', chatInput.value);
-      // make validation
       chatInput.value = '';
     });
   }

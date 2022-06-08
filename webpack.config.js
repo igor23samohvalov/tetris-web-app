@@ -10,7 +10,7 @@ const filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(filename);
 
 const config = {
-    entry: './src/app.js',
+    entry: './frontend/app.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
     },
@@ -20,7 +20,7 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html',
+            template: 'frontend/index.html',
         }),
 
         new MiniCssExtractPlugin(),

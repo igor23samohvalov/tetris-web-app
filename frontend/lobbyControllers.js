@@ -17,8 +17,7 @@ export default (player, socket) => {
   });
   quitButton.addEventListener('click', () => {
     socket.emit('leaveGame', player);
-    document.querySelector('.lobby').remove();
-    document.querySelector('.init').style.display = 'flex';
+    location.reload();
   });
   startButton.addEventListener('click', () => {
     socket.emit('loadGame');

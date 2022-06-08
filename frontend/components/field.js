@@ -13,7 +13,7 @@ export default (id, mode) => {
     const fieldHeader = document.createElement('div');
     fieldHeader.classList.add('field-header');
     fieldHeader.innerHTML = `
-      <span>Player ${id}</span>
+      <span>${id}</span>
       <span class="score-${id}">Score: 0</span>
     `;
     field.append(fieldHeader);

@@ -1,7 +1,7 @@
 export const getPlayers = ({players, ready}) => {
   return players.reduce((acc, current) => {
-    let isReady = ready.includes(current) ? '✓' : 'X';
-    acc.push(`<div><span>Player ${current}</span><span>${isReady}</span></div>`);
+    let isReady = ready.includes(current) ? '✓' : 'x';
+    acc.push(`<div><span>${current}</span><span>${isReady}</span></div>`);
     return acc;
   }, []);
 }
@@ -12,7 +12,7 @@ export default (roomId, show) => {
   
   div.innerHTML = `
     <div>
-      <h3>LOBBY: <i>${roomId}</i></h3>
+      <h3>LOBBY: <span>${roomId}</span></h3>
       <div>
           <h3>Connected players:</h3>
           <div class="lobby-players"></div>

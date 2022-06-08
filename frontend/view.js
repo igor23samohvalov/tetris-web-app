@@ -9,8 +9,7 @@ import {
 } from './render.js';
 
 const view = (state) => {
-  renderLayout(state.layout);
-  console.log(state.player)
+  renderLayout(state);
   const scoreTag = document.querySelector(`.score-${state.player}`);
 
   const watchedState = onChange(state, (path, value) => {
@@ -37,7 +36,7 @@ const view = (state) => {
     } else if (path === 'score') {
       scoreTag.textContent = `Score: ${value}`;
     } else if (path === 'messages') {
-      renderMessage(value);
+      renderMessage(value, state.player);
     } else if (path === 'shapeCells') {
       state.socket.emit('newTurn', {
         className: 'bg-cyan',
@@ -54,8 +53,8 @@ const view = (state) => {
   })
   if (state.layout === 'multiplayer') {
     // socket message listener
-    state.socket.on('newMessage', (msg) => {
-      watchedState.messages.push(msg);
+    state.socket.on('newMessage', (data) => {
+      watchedState.messages.push(data);
     });
 
     // socket turn listeners

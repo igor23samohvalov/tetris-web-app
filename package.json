@@ -6,7 +6,7 @@
     "npm": "8.10.0"
   },
   "description": "multiplayer-tetris-vanilla-js",
-  "main": ".src/app.js",
+  "main": ".frontend/app.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,8 +14,10 @@
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
-    "serve": "webpack serve",
-    "start": "webpack-dev-server --config webpack.config.js --open"
+    "frontend": "webpack serve",
+    "some": "webpack-dev-server --config webpack.config.js --open",
+    "backend": "cd backend; nodemon index.js",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "keywords": [],
   "author": "",
@@ -34,6 +36,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
+    "concurrently": "^7.2.1",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "on-change": "^4.0.0",

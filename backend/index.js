@@ -2,9 +2,10 @@ import express from 'express';
 import { Server } from 'socket.io';
 import http from 'http';
 import cors from 'cors';
-import { makeid } from '../utilityFNs.js';
+import { makeid } from '../frontend/utilityFNs.js';
 
 const isProduction = process.env.NODE_ENV == 'production';
+const PORT = 3000 || process.env.PORT;
 const devHost = 'http://localhost:8080';
 const isDevelopment = !isProduction;
 
@@ -32,22 +33,21 @@ const buildRoomState = (roomId) => ({
 io.on('connection', (socket) => {
   console.log(socket.id, ' connected');
 
-  socket.on('newLobby', () => {
+  socket.on('newLobby', (profile = 1) => {
     const roomId = makeid(5);
     state[roomId] = buildRoomState(roomId);
 
     socket.join(roomId)
     socket.number = 1;
     socket.roomId = roomId;
-    state[roomId].players.push(socket.number);
+    state[roomId].players.push(profile);
 
     socket.emit('newLobby', state[roomId]);
   })
 
-  socket.on('joinLobby', ({msg, roomId}) => {
-    console.log(msg, roomId);
+  socket.on('joinLobby', ({profile, roomId}) => {
     socket.roomId = roomId;
-    handleJoinGame(roomId, socket);
+    handleJoinGame(roomId, socket, profile);
   })
   socket.on('playerReady', ({ready, player}) => {
     const { roomId } = socket;
@@ -76,11 +76,11 @@ io.on('connection', (socket) => {
     socket.broadcast.to(state[roomId].roomId).emit('newLine', data);
   })
 
-  socket.on('newMessage', (message) => {
+  socket.on('newMessage', (data) => {
     const { roomId } = socket;
 
-    state[roomId].messages.push(message);
-    io.to(state[roomId].roomId).emit('newMessage', message)
+    state[roomId].messages.push(data);
+    io.to(state[roomId].roomId).emit('newMessage', data);
   })
 
   socket.on('gameOver?', ({ id, score }) => {
@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
 
   socket.on('leaveGame', (id) => {
     const { roomId } = socket;
-    console.log(`player${id} left the game`);
+    console.log(`${id} left the game`);
 
     state[roomId].players = state[roomId].players.filter((p) => p !== id);
     state[roomId].ready = state[roomId].ready.filter((p) => p !== id);
@@ -113,9 +113,9 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(3000, () => console.log('server is up'));
+server.listen(PORT, () => console.log('server is up'));
 
-function handleJoinGame(roomId, socket) {
+function handleJoinGame(roomId, socket, profile) {
   const room = io.of("/").adapter.rooms.get(roomId);
 
   let allUsers;
@@ -135,7 +135,7 @@ function handleJoinGame(roomId, socket) {
   socket.join(roomId);
   socket.number = numClients + 1;
 
-  state[roomId].players.push(socket.number);
+  state[roomId].players.push(profile);
 
-  io.to(state[roomId].roomId).emit('newPlayerJoined', { roomId, players: state[roomId].players });
+  io.to(state[roomId].roomId).emit('newPlayerJoined', { roomId, players: state[roomId].players, profile });
 }

@@ -2,8 +2,6 @@ import { isGameOver, getPosition } from './utilityFNs.js';
 import menu from './components/menu.js';
 import multiplayerMenu from './components/multiplayerMenu.js';
 
-// const field = document.querySelector('.field');
-
 const renderCell = (i) => {
   const div = document.createElement('div');
   div.classList.add('cell');
@@ -20,7 +18,7 @@ const renderEndGame = ({ winner, layout, score }) => {
   switch (layout) {
     case 'multiplayer':
       if (winner === 'draw') span.textContent = `Nobody won. It's a draw`
-      else span.textContent = `Winner is Player ${winner.id}. Final score: ${winner.score}`;
+      else span.textContent = `Winner is ${winner.id}! Final score: ${winner.score}`;
       break;
     case 'singleplayer':
     default:
@@ -120,10 +118,10 @@ const stopRender = (state, watchedState) => {
   lines.forEach((line) => {
     const cellsToDelete = [];
     line.forEach((cell) => cellsToDelete.push(state.gameField.indexOf(cell)));
-    line.forEach((cell) => {
+    line.forEach((cell, i) => {
       state.gameField = state.gameField.filter((_, i) => i !== state.gameField.indexOf(cell));
       cell.remove();
-      state.fieldContainer.prepend(renderCell());
+      state.fieldContainer.prepend(renderCell(i));
     });
 
     state.gameField = Array.from(state.fieldContainer.querySelectorAll('.cell'));
@@ -146,13 +144,13 @@ const stopRender = (state, watchedState) => {
   watchedState.render = 'start';
 };
 
-const renderLayout = (mode) => {
+const renderLayout = ({ layout, players }) => {
   const mainContainer = document.querySelector('.main-container');
   const fieldsContainer = document.querySelector('.fields-container');
 
-  switch (mode) {
+  switch (layout) {
     case 'multiplayer':
-      mainContainer.append(multiplayerMenu());
+      mainContainer.append(multiplayerMenu(players));
       return;
     case 'singleplayer':
     default:
@@ -161,12 +159,17 @@ const renderLayout = (mode) => {
   }
 }
 
-const renderMessage = (value) => {
-  const p = document.createElement('p');
-  p.classList.add('chat-message');
-  p.textContent = value[value.length - 1];
+const renderMessage = (messages, currentPlayer) => {
+  const [{ message, player }, ...rest] = messages.reverse();
 
-  document.querySelector('.chat-room').append(p);
+  const div = document.createElement('div');
+  if (player === currentPlayer) div.classList.add('ml-auto');
+
+  div.innerHTML = `
+    <span class="chat-player">${player}</span>
+    <span class="chat-message">: ${message}</span>
+  `
+  document.querySelector('.chat-room').append(div);
 }
 
 export { 
