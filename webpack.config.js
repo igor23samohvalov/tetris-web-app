@@ -19,10 +19,6 @@ const config = {
         port: 8080,
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: 'frontend/index.html',
-        }),
-
         new MiniCssExtractPlugin(),
     ],
     module: {
@@ -48,6 +44,12 @@ export default () => {
       config.mode = 'production';
     } else {
       config.mode = 'development';
+      config.plugins = [
+        new HtmlWebpackPlugin({
+            template: 'frontend/index.html',
+        }),
+        new MiniCssExtractPlugin(),
+      ]
     }
     return config;
   };

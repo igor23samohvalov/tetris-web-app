@@ -9,8 +9,17 @@ const PORT = 3000 || process.env.PORT;
 const devHost = 'http://localhost:8080';
 const isDevelopment = !isProduction;
 
+
 const app = express();
+
 app.use(cors());
+app.use(express.static('../dist'));
+
+if (process.env.npm_lifecycle_script.includes('production')) {
+  app.set('view engine', 'pug');
+  
+  app.get('/', (req, res) => res.render('index'));
+}
 
 const server = http.createServer(app);
 const io = new Server(server, {

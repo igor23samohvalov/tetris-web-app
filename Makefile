@@ -2,9 +2,7 @@ install:
 	npm ci
 start:
 	heroku local -f Procfile.dev
-start-backend:
-	npm run backend
-start-frontend:
-	npx webpack serve
+start dev:
+	npm run start:dev
 build:
 	npm run build

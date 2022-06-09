@@ -15,9 +15,9 @@
     "build:prod": "webpack --mode=production --node-env=production",
     "watch": "webpack --watch",
     "frontend": "webpack serve",
-    "some": "webpack-dev-server --config webpack.config.js --open",
     "backend": "cd backend; nodemon index.js",
-    "start": "concurrently \"npm run backend\" \"npm run frontend\""
+    "start": "webpack --mode=production --node-env=production; cd backend; nodemon index.js",
+    "start:dev": "concurrently \"npm run frontend\" \"npm run backend\""
   },
   "keywords": [],
   "author": "",
@@ -27,6 +27,7 @@
     "@babel/preset-env": "^7.17.10",
     "@webpack-cli/generators": "^2.4.2",
     "babel-loader": "^8.2.5",
+    "cross-env": "^7.0.3",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.0",
@@ -39,7 +40,9 @@
     "concurrently": "^7.2.1",
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "jade": "^1.11.0",
     "on-change": "^4.0.0",
+    "pug": "^3.0.2",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1"
   }

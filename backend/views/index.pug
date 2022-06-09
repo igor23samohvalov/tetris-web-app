@@ -1,0 +1,24 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    //- script(src="main.js")
+    link(href="./main.css" rel="stylesheet")
+    title Tetris Web App
+  body
+    div.main-container
+    div.init.modal
+      div
+        h3 SINGPLAYER 
+        button.btn#singleplayer Start Game
+      div
+        h3 MULTIPLAYER 
+        form.init-form
+          input(type="text" placeholder="Enter Lobby ID" id="roomId" maxlength="5")
+          input(type="text" placeholder="Enter Username" id="username" maxlength="10")
+          button.btn#joinGame Join Lobby
+          button.btn#newGame Start new session
+    script(src="./main.js")
+  
