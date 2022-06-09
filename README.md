@@ -4,8 +4,8 @@ Frontend: Webpack 5, vanilla JS.
 State-managment is possible by library "onChange".
 
 To run locally:
-$ make install
-$ make start dev
+# $ make install
+# $ make start dev
 
 Heroku: https://multiplayer-tetris-nodejs.herokuapp.com/
 
