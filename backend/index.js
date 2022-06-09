@@ -5,7 +5,7 @@ import cors from 'cors';
 import { makeid } from '../frontend/utilityFNs.js';
 
 const isProduction = process.env.NODE_ENV == 'production';
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT ? process.env.PORT : 3000
 const devHost = 'http://localhost:8080';
 const isDevelopment = !isProduction;
 
