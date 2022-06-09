@@ -17,7 +17,7 @@
     "watch": "webpack --watch",
     "frontend": "webpack serve",
     "backend": "cd backend; nodemon index.js",
-    "start": "webpack --mode=production --node-env=production; cd backend; nodemon index.js",
+    "start": "webpack --mode=production --node-env=production; cd backend; node index.js",
     "start:dev": "concurrently \"npm run frontend\" \"npm run backend\""
   },
   "keywords": [],
