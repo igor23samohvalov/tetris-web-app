@@ -30,13 +30,15 @@ const io = new Server(server, {
 
 const state = {};
 
-const buildRoomState = (roomId) => ({
+const buildRoomState = (roomId, profile) => ({
   roomId,
+  roomOwner: profile,
   players: [],
   messages: [],
   ready: [],
   losers: [],
   winner: undefined,
+  gameState: null,
 })
 
 io.on('connection', (socket) => {
@@ -44,12 +46,13 @@ io.on('connection', (socket) => {
 
   socket.on('newLobby', (profile = 1) => {
     const roomId = makeid(5);
-    state[roomId] = buildRoomState(roomId);
+    state[roomId] = buildRoomState(roomId, profile);
 
     socket.join(roomId)
     socket.number = 1;
     socket.roomId = roomId;
     state[roomId].players.push(profile);
+    state[roomId].gameState = 'lobby';
 
     socket.emit('newLobby', state[roomId]);
   })
@@ -69,6 +72,7 @@ io.on('connection', (socket) => {
 
   socket.on('loadGame', () => {
     const { roomId } = socket;
+    state[roomId].gameState = 'game';
   
     io.to(state[roomId].roomId).emit('loadGame', state[roomId].players);
   })
@@ -108,7 +112,12 @@ io.on('connection', (socket) => {
 
   socket.on('leaveGame', (id) => {
     const { roomId } = socket;
-    console.log(`${id} left the game`);
+  
+    if (id === state[roomId].roomOwner) {
+      socket.leave(state[roomId].roomId);
+      socket.broadcast.to(state[roomId].roomId).emit('lobbyClosed');
+      return;
+    }
 
     state[roomId].players = state[roomId].players.filter((p) => p !== id);
     state[roomId].ready = state[roomId].ready.filter((p) => p !== id);
@@ -138,6 +147,12 @@ function handleJoinGame(roomId, socket, profile) {
     return;
   } else if (numClients > 2) {
     socket.emit('tooManyPlayers');
+    return;
+  } else if (state[roomId].players.includes(profile)) {
+    socket.emit('nameIsTaken');
+    return;
+  } else if (state[roomId].gameState === 'game') {
+    socket.emit('gameIsOn');
     return;
   }
 

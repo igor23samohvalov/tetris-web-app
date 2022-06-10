@@ -1,7 +1,7 @@
 export default (players) => {
   const div = document.createElement('div');
   div.classList.add('menu-container', 'multiplayer');
-  const elementPlayers = players.map((p) => `<p>${p}</p>`);
+  const elementPlayers = players.map((p) => `<p># ${p}</p>`);
   div.innerHTML = `
     <div class="chat">
       <i class="chat-header">Players:</i>

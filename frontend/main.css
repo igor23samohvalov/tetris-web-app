@@ -94,6 +94,17 @@ body {
   font-weight: 700;
 }
 
+.chat-users > p {
+  text-align: left;
+  margin-bottom: 0;
+  margin-top: 5px;
+  padding: 3px;
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+  font-style: italic;
+}
+
 .chat-room {
   display: flex;
   flex-direction: column;
@@ -287,11 +298,13 @@ body {
   border-radius: 15px 0 0 15px;
   width: 39%;
   margin-right: 0;
+  margin-top: 10px;
 }
 
 #newGame {
   border-radius: 0 15px 15px 0;
   width: 39%;
+  margin-top: 10px;
 }
 
 .modal {
@@ -346,8 +359,15 @@ button:disabled:hover {
   height: 30px;
   padding: 5px;
   width: 35%;
-  margin-bottom: 10px;
   text-align: center;
+}
+
+.init .invalid {
+  display: block;
+  width: 100%;
+  color: #FFE523;
+  font-size: 16px;
+  margin-top: 2px;
 }
 
 #username {

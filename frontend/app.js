@@ -9,6 +9,7 @@ import lobby, { getPlayers } from './components/lobby.js';
 import createFieldsContainer from './components/fieldsContainer.js';
 import createField from './components/field.js';
 import loadLobbyControllers from './lobbyControllers.js';
+import { initErrorsProxy, initErrorsState } from './errors.js';
 
 const isProduction = process.env.NODE_ENV == 'production';
 const isDevelopment = !isProduction;
@@ -21,6 +22,9 @@ const joinGame = document.querySelector('#joinGame');
 const roomIdinput = document.querySelector('#roomId');
 const usernameInput = document.querySelector('#username');
 const container = document.querySelector('.main-container');
+
+const errorsState = initErrorsState();
+const errorsProxy = initErrorsProxy(errorsState);
 
 const lobbyState = {
   players: [],
@@ -87,30 +91,46 @@ socket.on('connect', () => {
 // starting multiplayer
 newGame.addEventListener('click', (e) => {
   e.preventDefault();
-  socket.emit('newLobby', usernameInput.value);
+
+  if (!usernameInput.value) errorsProxy.username = 'username is required'
+  else {
+    errorsProxy.username = '';
+    socket.emit('newLobby', usernameInput.value);
+  };
 })
 socket.on('newLobby', ({ roomId, players }) => {
   PLAYER = players[0];
 
   document.querySelector('.init').style.display = 'none';
+
   document.body.append(lobby(roomId, 'block'));
   lobbyProxy.players = players;
   loadLobbyControllers(PLAYER, socket);
 })
 
 // socket error sceneries
-socket.on('unknownGame', () => console.log('unknown Room ID'));
-socket.on('tooManyPlayers', () => console.log('game room is FULL'));
+socket.on('unknownGame', () => errorsProxy.roomId = 'no matching lobby');
+socket.on('tooManyPlayers', () => errorsProxy.roomId = 'lobby is full');
+socket.on('nameIsTaken', () => errorsProxy.username = 'username is taken');
+socket.on('gameIsOn', () => errorsProxy.roomId = 'game in progress, try letter');
+socket.on('lobbyClosed', () => location.reload());
 // 
 
 // another players connection listeners
   // outcome
 joinGame.addEventListener('click', (e) => {
   e.preventDefault();
-  socket.emit('joinLobby', {
-    roomId: roomIdinput.value,
-    profile: usernameInput.value,
-  });
+
+  if (!usernameInput.value) errorsProxy.username = 'username is required'
+  else {
+    errorsProxy.username = '';
+    errorsProxy.roomId = '';
+
+    socket.emit('joinLobby', {
+      roomId: roomIdinput.value,
+      profile: usernameInput.value,
+    });
+  }
 })
   // income
 socket.on('newPlayerJoined', ({ roomId, players, profile }) => {
