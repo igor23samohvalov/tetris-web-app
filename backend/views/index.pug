@@ -4,7 +4,6 @@ html(lang="en")
     meta(charset="UTF-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    //- script(src="main.js")
     link(href="./main.css" rel="stylesheet")
     title Tetris Web App
   body
@@ -14,12 +13,17 @@ html(lang="en")
         h3 SINGPLAYER 
         button.btn#singleplayer Start Game
       div
-        h3 MULTIPLAYER 
+        h3 JOIN SESSION 
         form.init-form
           input(type="text" placeholder="Enter Lobby ID" id="roomId" maxlength="5")
-          input(type="text" placeholder="Enter Username" id="username" maxlength="10")
-          span.invalid
+          span.invalid.room_error
+          input(type="text" placeholder="Enter Username" id="joinUsername" maxlength="10")
+          span.invalid.join_error
           button.btn#joinGame Join Lobby
+        h3 OR START A NEW ONE
+        form.init-form
+          input(type="text" placeholder="Enter Username" id="newUsername" maxlength="10")
+          span.invalid.start_error
           button.btn#newGame Start new session
     script(src="./main.js")
   

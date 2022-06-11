@@ -1,22 +1,29 @@
 import onChange from 'on-change';
 
-const output = document.querySelector('.invalid');
+const errorInputBorder = '3px solid yellow';
+const defaultInputBorder = '3px solid #333';
+
+const errorMapping = (path, value) => {
+  document.querySelector(`.${path}`).textContent = value
+}
+
+const borderMapping = {
+  room_error: '#roomId',
+  start_error: '#newUsername',
+  join_error: '#joinUsername',
+}
 
 export const initErrorsState = () => ({
-  roomId: '',
-  username: '',
+  room_error: '',
+  start_error: '',
+  join_error: '',
 });
 
 export const initErrorsProxy = (state) => (onChange(state, (path, value) => {
-  switch (path) {
-    case 'username':
-      output.textContent = value;
-      break;
-    case 'roomId':
-      output.textContent = value;
-    default:
-      break;
-  }
+  if (value === '') document.querySelector(borderMapping[path]).style.border = defaultInputBorder
+  else document.querySelector(borderMapping[path]).style.border = errorInputBorder
+
+  errorMapping(path, value);
 }))
 
 

@@ -20,7 +20,8 @@ let PLAYER;
 const newGame = document.querySelector('#newGame');
 const joinGame = document.querySelector('#joinGame');
 const roomIdinput = document.querySelector('#roomId');
-const usernameInput = document.querySelector('#username');
+const newUsernameInput = document.querySelector('#newUsername');
+const joinUsernameInput = document.querySelector('#joinUsername');
 const container = document.querySelector('.main-container');
 
 const errorsState = initErrorsState();
@@ -92,10 +93,10 @@ socket.on('connect', () => {
 newGame.addEventListener('click', (e) => {
   e.preventDefault();
 
-  if (!usernameInput.value) errorsProxy.username = 'username is required'
+  if (!newUsernameInput.value) errorsProxy.start_error = 'username is required'
   else {
-    errorsProxy.username = '';
-    socket.emit('newLobby', usernameInput.value);
+    errorsProxy.start_error = '';
+    socket.emit('newLobby', newUsernameInput.value);
   };
 })
 socket.on('newLobby', ({ roomId, players }) => {
@@ -109,10 +110,10 @@ socket.on('newLobby', ({ roomId, players }) => {
 })
 
 // socket error sceneries
-socket.on('unknownGame', () => errorsProxy.roomId = 'no matching lobby');
-socket.on('tooManyPlayers', () => errorsProxy.roomId = 'lobby is full');
-socket.on('nameIsTaken', () => errorsProxy.username = 'username is taken');
-socket.on('gameIsOn', () => errorsProxy.roomId = 'game in progress, try letter');
+socket.on('unknownGame', () => errorsProxy.room_error = 'no matching lobby');
+socket.on('tooManyPlayers', () => errorsProxy.room_error = 'lobby is full');
+socket.on('nameIsTaken', () => errorsProxy.join_error = 'username is taken');
+socket.on('gameIsOn', () => errorsProxy.room_error = 'game in progress, try letter');
 socket.on('lobbyClosed', () => location.reload());
 // 
 
@@ -121,14 +122,14 @@ socket.on('lobbyClosed', () => location.reload());
 joinGame.addEventListener('click', (e) => {
   e.preventDefault();
 
-  if (!usernameInput.value) errorsProxy.username = 'username is required'
+  if (!joinUsernameInput.value) errorsProxy.join_error = 'username is required'
   else {
-    errorsProxy.username = '';
-    errorsProxy.roomId = '';
+    errorsProxy.join_error = '';
+    errorsProxy.room_error = '';
 
     socket.emit('joinLobby', {
       roomId: roomIdinput.value,
-      profile: usernameInput.value,
+      profile: joinUsernameInput.value,
     });
   }
 })

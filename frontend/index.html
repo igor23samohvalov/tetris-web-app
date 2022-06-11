@@ -12,14 +12,20 @@
                 <button class="btn" id="singleplayer">Start Game</button>
             </div>
             <div>
-                <h3>MULTIPLAYER</h3>
+                <h3>JOIN SESSION</h3>
                 <form class="init-form">
                     <input type="text" placeholder="Enter Lobby ID" id="roomId" maxlength="5">
-                    <input type="text" placeholder="Enter Username" id="username" maxlength="10">
-                    <span class="invalid"></span>
-                    <button class="btn" id="joinGame">Join Lobby</button>
-                    <button class="btn" id="newGame">Start new session</button>
+                    <span class="invalid room_error"></span>
+                    <input type="text" placeholder="Enter Username" id="joinUsername" maxlength="10">
+                    <span class="invalid join_error"></span>
+                    <button class="btn" id="joinGame">Join Lobby</button>      
                 </form>
+                <h3>OR START A NEW ONE</h3>
+                <form class="init-form">
+                    <input type="text" placeholder="Enter Username" id="newUsername" maxlength="10">
+                    <span class="invalid start_error"></span>
+                    <button class="btn" id="newGame">Start new session</button>
+                </form>    
             </div>
         </div>
     </body>
