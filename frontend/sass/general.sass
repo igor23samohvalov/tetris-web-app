@@ -1,0 +1,48 @@
+@font-face
+  font-family: 'Roboto', sans-serif
+  src: url('../fonts/Roboto-Regular.ttf')
+  font-weight: 400
+
+@font-face
+  font-family: 'Roboto', sans-serif
+  src: url('../fonts/Roboto-Bold.ttf')
+  font-weight: bold
+
+@font-face
+  font-family: 'Roboto', sans-serif
+  src: url('../fonts/Roboto-Italic.ttf')
+  font-style: italic
+  font-weight: 400
+
+*
+  font-family: 'Roboto', sans-serif
+  font-weight: 400
+
+body
+  margin: 0
+
+.main-container
+  @include flex(row, center, center, wrap)
+
+  width: 100vw
+  height: 100vh
+  background-color: $primary
+
+.btn
+  border-radius: 30px
+  width: 120px
+  height: 40px
+  background-color: $transparent
+  color: $white
+  border: 2px solid $white
+  margin: 5px
+  font-weight: bold
+
+  &:hover
+    background-color: $primary
+    color: $secondary
+    cursor: pointer
+
+  &:disabled 
+    opacity: 0.5
+

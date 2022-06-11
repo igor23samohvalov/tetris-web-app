@@ -14,8 +14,8 @@ export default (players) => {
       </form>
     </div>
     <div class="menu">
-        <button id="startButton">START</button>
-        <button id="stopButton">STOP</button>
+        <button id="startButton" class="btn">START</button>
+        <button id="stopButton" class="btn">STOP</button>
     </div>
     <div class="menu">
         <h3>Controls:</h3>

@@ -1,7 +1,7 @@
 
 import { io } from 'socket.io-client';
 import onChange from 'on-change';
-import './main.css';
+import './sass/app.sass';
 import shapes from './shapes.js';
 import view from './view.js';
 import { getRndInd } from './utilityFNs.js';

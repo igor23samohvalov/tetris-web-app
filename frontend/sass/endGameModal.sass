@@ -1,0 +1,19 @@
+.end-game
+  @include absolute(30%, 45%)
+  @include flex(column, space-evenly, center)
+
+  background-color: $black
+  width: 400px
+  height: 180px
+
+  // border: 3px solid $white
+  border-radius: 50px
+
+  color: $white
+  font-size: 24px
+  font-weight: bold
+  box-shadow: 0 8px 8px -4px black
+
+  .retry-button
+    &:hover
+      background-color: $white

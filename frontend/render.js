@@ -27,7 +27,7 @@ const renderEndGame = ({ winner, layout, score }) => {
   }
   
   const button = document.createElement('button');
-  button.classList.add('retry-button');
+  button.classList.add('retry-button', 'btn');
   button.textContent = 'Retry?';
   button.onclick = () => location.reload();
 

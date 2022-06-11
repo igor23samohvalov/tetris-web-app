@@ -1,0 +1,76 @@
+.modal
+  @include absolute(25%, 40%)
+  @include flex(column, space-between, center)
+ 
+  width: 300px
+  height: 310px
+  padding: 10px
+
+  background-color: $secondary
+  text-align: center
+  color: $white
+  border-radius: 30px
+  
+  box-shadow: 0 3px 10px $secondary
+
+  h3
+    font-weight: bold
+    margin-bottom: 16px
+
+    span
+      display: inline-block
+      border: 1px dashed $white
+      padding: 4px
+
+  p 
+    text-align: left
+
+.init
+  justify-content: space-evenly
+  
+  .init-form
+    @include flex(row, center, unset, wrap)
+
+    input
+      border-radius: 15px 0 0 15px
+      height: 30px
+      padding: 5px
+      width: 35%
+      text-align: center
+
+    .invalid
+      display: block
+      width: 100%
+      color: $invalid
+      font-size: 16px
+      margin-top: 2px
+    
+    #username
+      border-radius: 0 15px 15px 0
+
+    #joinGame
+      border-radius: 15px 0 0 15px
+      width: 39%
+      margin-right: 0
+      margin-top: 10px
+
+    #newGame
+      border-radius: 0 15px 15px 0
+      width: 39%
+      margin-top: 10px
+
+
+.lobby-players
+  border-top: 2px solid $white
+  border-bottom: 2px solid $white
+  background-color: $primary
+  color: $secondary
+  height: 80px
+  padding: 5px 20px
+
+  > div
+    @include flex(row, space-between, center)
+    margin: 5px
+
+.lobby-btns
+  @include flex(row, center, unset, wrap)
