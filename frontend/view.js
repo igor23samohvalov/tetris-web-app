@@ -10,12 +10,14 @@ import {
 
 const view = (state) => {
   renderLayout(state);
+  const startButton = document.querySelector('#startButton');
   const scoreTag = document.querySelector(`.score-${state.player}`);
 
   const watchedState = onChange(state, (path, value) => {
     if (path === 'render') {
       switch (value) {
         case 'start':
+          startButton.disabled = true;
           state.currentShape = state.getShape();
           state.shapePosition = 4;
           startRender(state, watchedState);
@@ -23,8 +25,10 @@ const view = (state) => {
         case 'next':
           break;
         case 'pause':
+          startButton.disabled = false;
           break;
         case 'unpause':
+          startButton.disabled = true;
           state.render = 'start';
           startRender(state, watchedState);
           break;
@@ -34,7 +38,7 @@ const view = (state) => {
           break;
       }
     } else if (path === 'score') {
-      scoreTag.textContent = `Score: ${value}`;
+      scoreTag.textContent = `SCORE: ${value}`;
     } else if (path === 'messages') {
       renderMessage(value, state.player);
     } else if (path === 'shapeCells') {

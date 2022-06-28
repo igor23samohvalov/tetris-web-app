@@ -1,6 +1,14 @@
-import { isGameOver, getPosition } from './utilityFNs.js';
+import { isGameOver, getPosition, updateOverflow } from './utilityFNs.js';
 import menu from './components/menu.js';
 import multiplayerMenu from './components/multiplayerMenu.js';
+
+const rowIsEmpty = (row) => !row.includes(1);
+const positionIsOutOfField = (position, state) => !state.gameField[position];
+const cellIsTaken = (position, state) => state.gameField?.[position]?.classList.contains('taken');
+const isPrevRowHasShapeBody = (shape, rowIndex, cellIndex) => shape?.[rowIndex - 1]?.[cellIndex] === 1;
+
+const thisIsLastLine = (position, state) => !state.gameField[position + 10];
+const nextLineCellisTaken = (position, state) => state.gameField[position + 10].classList.contains('taken');
 
 const renderCell = (i) => {
   const div = document.createElement('div');
@@ -53,25 +61,34 @@ const startRender = (state, watchedState) => {
         return;
     } 
   };
+  console.log(state.currentCells)
+  state.currentCells.forEach((cell) => {
+    state.gameField[cell].classList.remove('bg-cyan')
+  })
 
-  state.gameField.forEach((cell) => cell.classList.remove('bg-cyan'));
+  // state.gameField.forEach((cell) => {
+  //   cell.classList.remove('bg-cyan');
+  // });
+  state.currentCells = [];
 
   currentShape.forEach((row, rowIndex) => {
     row.forEach((cell, cellIndex) => {
       const position = getPosition(shapePosition, rowIndex, cellIndex);
-      // пустая линия и текущая ячейка является (нижней гранью либо занятой клеткой) и клетка линией выше занята
-      if ((!row.includes(1) && (!state.gameField[position]) || state.gameField?.[position]?.classList.contains('taken')) && currentShape?.[rowIndex - 1]?.[cellIndex] === 1) { 
+
+      if ((rowIsEmpty(row) && (positionIsOutOfField(position, state) || cellIsTaken(position, state))) && isPrevRowHasShapeBody(currentShape, rowIndex, cellIndex)) { 
         state.render = 'next';
       } else if (cell === 1) {
         state.gameField[position].classList.add('bg-cyan');
+        state.currentCells.push(position);
         tempCellsContainer.push(position);
-        // занятая ячейка и ячейка линией ниже есть (нижняя грань либо занятая клетка)
-        if (!state.gameField[position + 10] || state.gameField[position + 10].classList.contains('taken')) {
+
+        if (thisIsLastLine(position, state) || nextLineCellisTaken(position, state)) {
           state.render = 'next';
-        }
+        } 
       }
     });
   });
+  // console.log(state.currentEmpties)
   if (layout === 'multiplayer') {
     watchedState.shapeCells = tempCellsContainer;
   }
@@ -160,6 +177,7 @@ const renderLayout = ({ layout, players }) => {
 }
 
 const renderMessage = (messages, currentPlayer) => {
+  const chatContainer = document.querySelector('.chat-room');
   const [{ message, player }, ...rest] = messages.reverse();
 
   const div = document.createElement('div');
@@ -169,7 +187,8 @@ const renderMessage = (messages, currentPlayer) => {
     <span class="chat-player">${player}</span>
     <span class="chat-message">: ${message}</span>
   `
-  document.querySelector('.chat-room').append(div);
+  chatContainer.append(div);
+  updateOverflow(chatContainer);
 }
 
 export { 

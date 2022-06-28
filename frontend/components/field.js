@@ -5,7 +5,7 @@ export default (id, mode) => {
   field.classList.add('field');
   field.id = `field${id}`;
 
-  for (let i = 0; i < 250; i += 1) {
+  for (let i = 0; i < 200; i += 1) {
     const cell = createCell(i);
     field.append(cell);
   }
@@ -14,9 +14,11 @@ export default (id, mode) => {
     fieldHeader.classList.add('field-header');
     fieldHeader.innerHTML = `
       <span>${id}</span>
-      <span class="score-${id}">Score: 0</span>
+      <span class="score-${id}">SCORE: 0</span>
     `;
     field.append(fieldHeader);
+  } else {
+    field.classList.add('field-singleplayer');
   }
 
   return field;

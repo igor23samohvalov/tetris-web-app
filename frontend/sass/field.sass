@@ -9,8 +9,8 @@
     position: relative
     display: grid
     grid-template-columns: repeat(10, 1fr)
-    grid-template-rows: repeat(25, 1fr)
-    width: 14%
+    grid-template-rows: repeat(20, 1fr)
+    width: 17.5%
     height: 85%
 
     margin-right: 30px
@@ -23,10 +23,21 @@
       position: absolute
       left: 0
       right: 0
-      top: -30px
+      top: -35px
       display: flex
       justify-content: space-between
+      background-color: $black
+      color: $primary
+      padding: 5px
+      border-radius: 5px 5px 0 0
 
-      font-size: 24px
-      font-style: italic
+      font-size: 20px
+
       font-weight: bold
+
+  .field-singleplayer
+    width: 19.5%
+    height: 100%
+
+.multiplayer
+  background-color: $secondary

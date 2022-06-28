@@ -35,10 +35,10 @@ const shapeSquare = [
 ];
 // bugged on right move
 const shapeLine = [
-  [0, 1, 0, 0],
-  [0, 1, 0, 0],
-  [0, 1, 0, 0],
-  [0, 1, 0, 0],
+  [0, 1, 0],
+  [0, 1, 0],
+  [0, 1, 0],
+  [0, 1, 0],
 ];
 
 const shapes = [

@@ -57,7 +57,12 @@ const makeid = (length) => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
-} 
+}
+
+const updateOverflow = (container) => {
+  container.scrollTop += container.scrollHeight;
+};
+
 export {
   isGameOver,
   getPosition,
@@ -66,5 +71,6 @@ export {
   getEmptyShapeColls,
   getTakenCells,
   createCell,
-  makeid
+  makeid,
+  updateOverflow,
 };

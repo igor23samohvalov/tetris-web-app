@@ -1,4 +1,4 @@
-import { clockTurn, getEmptyShapeColls, getTakenCells } from './utilityFNs.js';
+import { clockTurn, getEmptyShapeColls, getPosition } from './utilityFNs.js';
 
 const loadControllers = (state, watchedState) => {
   if (state.layout === 'multiplayer') {
@@ -16,30 +16,54 @@ const loadControllers = (state, watchedState) => {
 
       chatInput.value = '';
     });
-  }
-  
-  const invalidCells = ['taken', 'edge']
+  };
 
   const keyMaps = {
     ArrowLeft: () => {
       const emptyColls = getEmptyShapeColls(state.currentShape, 'left');
       const shapeEdge = state.shapePosition + emptyColls
+      const shapeEdges = [];
+      for (let i = 0; i <= state.currentShape.length + 0; i += 1) {
+        shapeEdges.push((shapeEdge - 1 - emptyColls) + (10 * i));
+      }
 
       if (state.gameField[shapeEdge].classList.contains('edge')) return;
-      if (state.gameField[shapeEdge - 1].classList.contains('taken')) return;
+      if (shapeEdges.some((edge) => state.gameField?.[edge]?.classList?.contains('taken'))) {
+        console.log('wtf?')
+        return;
+      };
       state.shapePosition -= 1;
     },
-    ArrowUp: () => state.currentShape = clockTurn(state.currentShape),
+    ArrowUp: () => {
+      const turnedShapeClone = clockTurn(state.currentShape.slice());
+      let canTurn = true;
+      turnedShapeClone.forEach((row, rowI) => {
+        row.forEach((_, cellI) => {
+          const position = getPosition(state.shapePosition, rowI, cellI);
+          if (state.gameField[position].classList.contains('taken')) {
+            canTurn = false;
+          }
+        })
+      })
+      if (canTurn) state.currentShape = clockTurn(state.currentShape)
+    },
     ArrowRight: () => {
       const emptyColls = getEmptyShapeColls(state.currentShape, 'right');
-      const shapeEdge = state.shapePosition + state.currentShape.length - 1 - emptyColls;
-      const takenCells = getTakenCells(state.currentShape, shapeEdge, 'right', emptyColls);
+      const shapeEdge = state.shapePosition - emptyColls + (state.currentShape[0].length - 1);
+      const shapeEdges = [];
+      
+      for (let i = 0; i <= state.currentShape.length + 0; i += 1) {
+        shapeEdges.push((shapeEdge + 1 + emptyColls) + (10 * i));
+      }
 
       if (state.gameField[shapeEdge].classList.contains('edge')) return;
-      if (takenCells.some((cell) => state.gameField[cell].classList.contains('taken'))) return;
-      state.shapePosition += 1; 
+      if (shapeEdges.some((edge) => state.gameField?.[edge]?.classList?.contains('taken'))) {
+        console.log('wtf?')
+        return;
+      };
+      state.shapePosition += 1;
     },
-    ArrowDown: () => state.fallSpeed = 30,
+    ArrowDown: () => state.fallSpeed = 50,
     downUp: () => state.fallSpeed = 400,
   };
 
@@ -55,7 +79,7 @@ const loadControllers = (state, watchedState) => {
   document.querySelector('#startButton').addEventListener('click', () => {
     watchedState.render = state.render ? 'unpause' : 'start'
   });
-  document.querySelector('#stopButton').addEventListener('click', () => state.render = 'pause');
+  document.querySelector('#stopButton').addEventListener('click', () => watchedState.render = 'pause');
 }
 
 export default loadControllers;

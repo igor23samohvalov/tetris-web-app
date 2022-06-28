@@ -6,6 +6,7 @@ export default (gameMode, field, player = 1, socket = '', players = []) => ({
   render: null,
   getShape: () => shapes[getRndInd(shapes.length)],
   currentShape: shapes[getRndInd(shapes.length)],
+  currentCells: [],
   shapePosition: 4,
   fallSpeed: 400,
   score: 0,
