@@ -53,7 +53,9 @@ const startRender = (state, watchedState) => {
       case 'multiplayer':
         watchedState.render = 'pause';
         state.socket.emit('gameOver?', { id: state.player, score: state.score });
-        document.querySelector('#startButton').disabled = true;
+        if (state.gameOwner) {
+          document.querySelector('#startButton').disabled = true;
+        }
         return;
       case 'singleplayer':
       default:
@@ -61,7 +63,7 @@ const startRender = (state, watchedState) => {
         return;
     } 
   };
-  console.log(state.currentCells)
+
   state.currentCells.forEach((cell) => {
     state.gameField[cell].classList.remove('bg-cyan')
   })
@@ -161,13 +163,13 @@ const stopRender = (state, watchedState) => {
   watchedState.render = 'start';
 };
 
-const renderLayout = ({ layout, players }) => {
+const renderLayout = ({ layout, players, gameOwner }) => {
   const mainContainer = document.querySelector('.main-container');
   const fieldsContainer = document.querySelector('.fields-container');
 
   switch (layout) {
     case 'multiplayer':
-      mainContainer.append(multiplayerMenu(players));
+      mainContainer.append(multiplayerMenu(players, gameOwner));
       return;
     case 'singleplayer':
     default:

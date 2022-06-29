@@ -1,7 +1,15 @@
 export const getPlayers = ({players, ready}) => {
   return players.reduce((acc, current) => {
-    let isReady = ready.includes(current) ? '✓' : 'x';
-    acc.push(`<div><span>${current}</span><span>${isReady}</span></div>`);
+    const yesIcon = '<i class="gg-check-o"></i>';
+    const noIcon = '<i class="gg-close-o"></i>'
+    let icon = ready.includes(current) ? yesIcon : noIcon;
+  
+    acc.push(`
+      <div>
+        <span># ${current}</span>
+        ${icon}
+      </div>
+    `);
     return acc;
   }, []);
 }
@@ -11,10 +19,10 @@ export default (roomId, show) => {
   div.classList.add('modal', 'lobby');
   
   div.innerHTML = `
-    <div>
-      <h3>LOBBY: <span>${roomId}</span></h3>
-      <div>
-          <h3>Connected players:</h3>
+    <div class="lobby-container">
+      <h3>LOBBY ID: <span>${roomId}</span></h3>
+      <div class="lobby-container">
+          <h3>PLAYERS:</h3>
           <div class="lobby-players"></div>
       </div>
     </div>

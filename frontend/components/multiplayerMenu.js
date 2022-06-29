@@ -1,6 +1,14 @@
-export default (players) => {
+export default (players, gameOwner) => {
   const div = document.createElement('div');
   div.classList.add('menu-container', 'multiplayer');
+
+  const controlBlock = `
+    <div class="menu">
+      <button id="startButton" class="btn">START</button>
+      <button id="stopButton" class="btn">STOP</button>
+    </div>
+  `;
+
   const elementPlayers = players.map((p) => `<p># ${p}</p>`);
   div.innerHTML = `
     <div class="chat">
@@ -13,10 +21,7 @@ export default (players) => {
         <button class="chat-submit btn" type="submit">> Send</button>
       </form>
     </div>
-    <div class="menu">
-      <button id="startButton" class="btn">START</button>
-      <button id="stopButton" class="btn">STOP</button>
-    </div>
+    ${gameOwner ? controlBlock : ''}
     <div class="menu">
       <h4>CONTROLS:</h4>
       <div class="controls">

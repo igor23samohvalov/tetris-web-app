@@ -10,8 +10,10 @@ import {
 
 const view = (state) => {
   renderLayout(state);
-  const startButton = document.querySelector('#startButton');
   const scoreTag = document.querySelector(`.score-${state.player}`);
+  const startButton = state.gameOwner
+    ? document.querySelector('#startButton')
+    : document.querySelector('.chat-users');
 
   const watchedState = onChange(state, (path, value) => {
     if (path === 'render') {
@@ -43,7 +45,7 @@ const view = (state) => {
       renderMessage(value, state.player);
     } else if (path === 'shapeCells') {
       state.socket.emit('newTurn', {
-        className: 'bg-cyan',
+        className: 'bg-yellow',
         id: state.player,
         cells: value,
       })
@@ -60,7 +62,15 @@ const view = (state) => {
     state.socket.on('newMessage', (data) => {
       watchedState.messages.push(data);
     });
-
+    // socket match listeners
+    state.socket.on('startMatch', () => {
+      console.log('startMatch')
+      watchedState.render = state.render ? 'unpause' : 'start';
+    });
+    state.socket.on('stopMatch', () => {
+      console.log('stopMatch')
+      watchedState.render = 'pause';
+    });
     // socket turn listeners
     state.socket.on('newTurn', ({ className, id, cells }) => {
       const playersField = document.querySelector(`#field${id}`);
@@ -70,7 +80,7 @@ const view = (state) => {
         case 'taken':
           cells.forEach((cell) => playersCells[cell].classList.add(className));
           break;
-        case 'bg-cyan':
+        case 'bg-yellow':
         default:
           playersCells.forEach((cell) => cell.classList.remove(className));
           cells.forEach((cell) => playersCells[cell].classList.add(className));

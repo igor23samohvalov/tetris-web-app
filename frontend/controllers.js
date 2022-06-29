@@ -74,12 +74,20 @@ const loadControllers = (state, watchedState) => {
     if (e.key === 'ArrowDown') keyMaps['downUp']();
   }
 
-
-
-  document.querySelector('#startButton').addEventListener('click', () => {
-    watchedState.render = state.render ? 'unpause' : 'start'
+  document?.querySelector('#startButton')?.addEventListener('click', () => {
+    if (state.layout === 'multiplayer') {
+      state.socket.emit('startMatch');
+    } else {
+      watchedState.render = state.render ? 'unpause' : 'start';
+    }
   });
-  document.querySelector('#stopButton').addEventListener('click', () => watchedState.render = 'pause');
+  document?.querySelector('#stopButton')?.addEventListener('click', () => {
+    if (state.layout === 'multiplayer') {
+      state.socket.emit('stopMatch');
+    } else {
+      watchedState.render = 'pause';
+    }
+  });
 }
 
 export default loadControllers;

@@ -77,6 +77,18 @@ io.on('connection', (socket) => {
     io.to(state[roomId].roomId).emit('loadGame', state[roomId].players);
   })
 
+  socket.on('startMatch', () => {
+    const { roomId } = socket;
+
+    io.to(state[roomId].roomId).emit('startMatch');
+  })
+
+  socket.on('stopMatch', () => {
+    const { roomId } = socket;
+
+    io.to(state[roomId].roomId).emit('stopMatch');
+  })
+
   socket.on('newTurn', (data) => {
     const { roomId } = socket;
   

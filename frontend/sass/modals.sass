@@ -3,7 +3,7 @@
   @include flex(column, space-between, center)
  
   width: 300px
-  height: 310px
+  height: 320px
   padding: 10px 0
 
   background-color: $secondary
@@ -15,17 +15,20 @@
 
   h3
     font-weight: bold
-    font-style: italic
     margin-top: 20px
     margin-bottom: 4px
 
     span
       display: inline-block
-      border: 1px dashed $white
       padding: 4px
+      color: $primary
 
   p 
     text-align: left
+
+  .lobby-container
+    @include flex(column, center, center)
+    width: 100%
 
 .init
   justify-content: space-evenly
@@ -59,14 +62,19 @@
 .lobby-players
   border-top: 2px solid $white
   border-bottom: 2px solid $white
-  background-color: $primary
-  color: $secondary
+  color: $white
   height: 80px
-  padding: 5px 20px
+  width: 80%
+  padding: 10px 0
 
   > div
-    @include flex(row, space-between, center)
+    @include flex(row, space-between, center )
     margin: 5px
+
+    span
+      font-weight: bold
+      font-style: italic
+    
 
 .lobby-btns
   @include flex(row, center, unset, wrap)

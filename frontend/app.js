@@ -15,6 +15,7 @@ const isDevelopment = !isProduction;
 const devHost = isDevelopment ? 'http://localhost:3000' : '';
 
 let PLAYER;
+let GAME_OWNER;
 
 const container = document.querySelector('.main-container');
 // buttons
@@ -64,6 +65,7 @@ newGame.addEventListener('click', (e) => {
 })
 socket.on('newLobby', ({ roomId, players }) => {
   PLAYER = players[0];
+  GAME_OWNER = true;
 
   document.querySelector('.init').style.display = 'none';
 
@@ -93,6 +95,7 @@ socket.on('newPlayerJoined', ({ roomId, players, profile }) => {
   if (!PLAYER) {
     document.body.append(lobby(roomId, 'none'))
     PLAYER = profile;
+    GAME_OWNER = false;
     loadLobbyControllers(PLAYER, socket);
   }
 
@@ -113,7 +116,7 @@ socket.on('loadGame', (players) => {
     fieldsContainer.append(field);
 
     if (player === PLAYER) {
-      const matchState = buildMatchState('multiplayer', field, PLAYER, socket, players);
+      const matchState = buildMatchState('multiplayer', field, PLAYER, socket, players, GAME_OWNER);
       view(matchState);
     }
   });

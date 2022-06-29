@@ -2,7 +2,7 @@ import shapes from './shapes.js';
 import { getRndInd } from './utilityFNs.js';
 
 
-export default (gameMode, field, player = 1, socket = '', players = []) => ({
+export default (gameMode, field, player = 1, socket = '', players = [], gameOwner = true) => ({
   render: null,
   getShape: () => shapes[getRndInd(shapes.length)],
   currentShape: shapes[getRndInd(shapes.length)],
@@ -15,6 +15,7 @@ export default (gameMode, field, player = 1, socket = '', players = []) => ({
   messages: [],
   layout: gameMode,
   fieldContainer: field,
+  gameOwner,
   player,
   players,
   shapeCells: [],
