@@ -1,14 +1,14 @@
 
 import { io } from 'socket.io-client';
 import './sass/app.sass';
-import view from './view.js';
+import view from './views/view.js';
 import lobby from './components/lobby.js';
 import createFieldsContainer from './components/fieldsContainer.js';
 import createField from './components/field.js';
-import loadLobbyControllers from './lobbyControllers.js';
-import { initErrorsProxy, initErrorsState } from './errorsState.js';
-import { initLobbyState, initLobbyProxy } from './lobbyState.js';
-import buildMatchState from './matchState.js';
+import loadLobbyControllers from './controllers/lobbyControllers.js';
+import { initErrorsProxy, initErrorsState } from './models/errorsState.js';
+import { initLobbyState, initLobbyProxy } from './models/lobbyState.js';
+import buildMatchState from './models/matchState.js';
 
 const isProduction = process.env.NODE_ENV == 'production';
 const isDevelopment = !isProduction;

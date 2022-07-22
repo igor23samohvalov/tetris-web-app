@@ -1,4 +1,4 @@
-const createCell = (index) => {  
+export const createCell = (index) => {  
   const classes = (index % 10 === 0 || (index + 1) % 10 === 0)
     ? ['cell', 'edge']
     : ['cell'];
@@ -7,14 +7,14 @@ const createCell = (index) => {
   return div;
 }
 
-const isGameOver = (field) => {
+export const isGameOver = (field) => {
   const dangerZone = [4, 5, 6, 14, 15, 16, 24, 25, 26, 34, 35, 36];
   const targetCells = field.filter((_, i) => dangerZone.includes(i));
   const takenCells = targetCells.filter((cell) => cell.classList.contains('taken'));
   return takenCells.length > 0;
 }
 
-function clockTurn(shape) {
+export function clockTurn(shape) {
   return shape.reduce((acc, row) => {
     row.forEach((cell, cellIndex) => {
       if (!acc[cellIndex]) acc[cellIndex] = []
@@ -24,10 +24,10 @@ function clockTurn(shape) {
   }, [])
 }
 
-const getPosition = (start, rowIndex, cellIndex) => start + (10 * rowIndex) + cellIndex;
-const getRndInd = (length) => (Math.floor(Math.random() * length));
+export const getPosition = (start, rowIndex, cellIndex) => start + (10 * rowIndex) + cellIndex;
+export const getRndInd = (length) => (Math.floor(Math.random() * length));
 
-const getEmptyShapeColls = (shape, side = 'left') => {
+export const getEmptyShapeColls = (shape, side = 'left') => {
   let newShape = shape;
   if (side === 'right') newShape = shape.map((line) => line.slice().reverse())
   const turnedShape = clockTurn(newShape);
@@ -37,7 +37,7 @@ const getEmptyShapeColls = (shape, side = 'left') => {
 }
 
 const colMapping = [-1, 0, 1]
-const getTakenCells = (shape, shapePos, side, emptyColls) => {
+export const getTakenCells = (shape, shapePos, side, emptyColls) => {
   return shape.reduce((acc, line, i) => {
     if (line.includes(1)) {
       const takenInd = colMapping[line.lastIndexOf(1)]
@@ -48,7 +48,7 @@ const getTakenCells = (shape, shapePos, side, emptyColls) => {
   }, [])
 }
 
-const makeid = (length) => {
+export const makeid = (length) => {
   let result = '';
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const charactersLength = characters.length;
@@ -59,18 +59,6 @@ const makeid = (length) => {
   return result;
 }
 
-const updateOverflow = (container) => {
+export const updateOverflow = (container) => {
   container.scrollTop += container.scrollHeight;
-};
-
-export {
-  isGameOver,
-  getPosition,
-  getRndInd,
-  clockTurn,
-  getEmptyShapeColls,
-  getTakenCells,
-  createCell,
-  makeid,
-  updateOverflow,
 };

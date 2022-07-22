@@ -33,7 +33,7 @@ const shapeSquare = [
   [0, 1, 1],
   [0, 0, 0],
 ];
-// bugged on right move
+
 const shapeLine = [
   [0, 1, 0],
   [0, 1, 0],
@@ -42,7 +42,13 @@ const shapeLine = [
 ];
 
 const shapes = [
-  shapeT,  shapeL,  shapeS,  shapeSquare, shapeLine, shapeLReversed, shapeSreversed
+  shapeT,
+  shapeL,
+  shapeS,
+  shapeSquare,
+  shapeLine,
+  shapeLReversed,
+  shapeSreversed,
 ];
 
 export default shapes;

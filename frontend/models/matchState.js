@@ -1,15 +1,21 @@
-import shapes from './shapes.js';
-import { getRndInd } from './utilityFNs.js';
+import shapes from '../shapes.js';
+import { getRndInd } from '../lib/utilityFNs.js';
 
 
 export default (gameMode, field, player = 1, socket = '', players = [], gameOwner = true) => ({
-  render: null,
+  render: {
+    value: null,
+  },
+  visuals: {
+    score: 0,
+    shapeCells: [],
+    takenCells: [],
+  },
   getShape: () => shapes[getRndInd(shapes.length)],
   currentShape: shapes[getRndInd(shapes.length)],
   currentCells: [],
   shapePosition: 4,
   fallSpeed: 400,
-  score: 0,
   gameField: Array.from(field.querySelectorAll('.cell')),
   socket: socket,
   messages: [],
@@ -18,7 +24,5 @@ export default (gameMode, field, player = 1, socket = '', players = [], gameOwne
   gameOwner,
   player,
   players,
-  shapeCells: [],
-  takenCells: [],
   winner: null,
 })

@@ -1,6 +1,6 @@
-import { clockTurn, getEmptyShapeColls, getPosition } from './utilityFNs.js';
+import { clockTurn, getEmptyShapeColls, getPosition } from '../lib/utilityFNs.js';
 
-const loadControllers = (state, watchedState) => {
+const loadMatchControllers = (state, renderView) => {
   if (state.layout === 'multiplayer') {
     const submitButton = document.querySelector('.chat-submit');
     const chatInput = document.querySelector('.chat-input');
@@ -78,16 +78,16 @@ const loadControllers = (state, watchedState) => {
     if (state.layout === 'multiplayer') {
       state.socket.emit('startMatch');
     } else {
-      watchedState.render = state.render ? 'unpause' : 'start';
+      renderView.value = state.render.value ? 'unpause' : 'start';
     }
   });
   document?.querySelector('#stopButton')?.addEventListener('click', () => {
     if (state.layout === 'multiplayer') {
       state.socket.emit('stopMatch');
     } else {
-      watchedState.render = 'pause';
+      renderView.value = 'pause';
     }
   });
 }
 
-export default loadControllers;
+export default loadMatchControllers;

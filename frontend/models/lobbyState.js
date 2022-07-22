@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import { getPlayers } from './components/lobby.js';
+import { getPlayers } from '../components/lobby.js';
 
 export const initLobbyState = () => ({
   players: [],

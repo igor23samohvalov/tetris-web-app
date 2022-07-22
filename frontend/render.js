@@ -1,4 +1,4 @@
-import { isGameOver, getPosition, updateOverflow } from './utilityFNs.js';
+import { isGameOver, getPosition, updateOverflow } from './lib/utilityFNs.js';
 import menu from './components/menu.js';
 import multiplayerMenu from './components/multiplayerMenu.js';
 
@@ -10,14 +10,14 @@ const isPrevRowHasShapeBody = (shape, rowIndex, cellIndex) => shape?.[rowIndex -
 const thisIsLastLine = (position, state) => !state.gameField[position + 10];
 const nextLineCellisTaken = (position, state) => state.gameField[position + 10].classList.contains('taken');
 
-const renderCell = (i) => {
+export const renderCell = (i) => {
   const div = document.createElement('div');
   div.classList.add('cell');
   if (i === 0 || i === 9) div.classList.add('edge');
   return div;
-}
+};
 
-const renderEndGame = ({ winner, layout, score }) => {
+export function renderEndGame({ winner, layout, visuals }) {
   const div = document.createElement('div');
   div.classList.add('end-game');
 
@@ -30,7 +30,7 @@ const renderEndGame = ({ winner, layout, score }) => {
       break;
     case 'singleplayer':
     default:
-      span.textContent = `Your final score: ${score}`;
+      span.textContent = `Your final score: ${visuals.score}`;
       break;
   }
   
@@ -43,34 +43,30 @@ const renderEndGame = ({ winner, layout, score }) => {
   div.append(button);
 
   document.body.append(div);
-}
+};
 
-const startRender = (state, watchedState) => {
+export function startRender(state, renderView, matchVisualsView) {
   const { shapePosition, currentShape, layout } = state;
   const tempCellsContainer = [];
   if (isGameOver(state.gameField)) {
     switch (state.layout) {
       case 'multiplayer':
-        watchedState.render = 'pause';
-        state.socket.emit('gameOver?', { id: state.player, score: state.score });
+        renderView.value = 'pause';
+        state.socket.emit('gameOver?', { id: state.player, score: state.visuals.score });
         if (state.gameOwner) {
           document.querySelector('#startButton').disabled = true;
         }
         return;
       case 'singleplayer':
       default:
-        watchedState.render = 'finish';
+        renderView.value = 'finish';
         return;
     } 
-  };
+  }
 
   state.currentCells.forEach((cell) => {
     state.gameField[cell].classList.remove('bg-cyan')
-  })
-
-  // state.gameField.forEach((cell) => {
-  //   cell.classList.remove('bg-cyan');
-  // });
+  });
   state.currentCells = [];
 
   currentShape.forEach((row, rowIndex) => {
@@ -78,30 +74,30 @@ const startRender = (state, watchedState) => {
       const position = getPosition(shapePosition, rowIndex, cellIndex);
 
       if ((rowIsEmpty(row) && (positionIsOutOfField(position, state) || cellIsTaken(position, state))) && isPrevRowHasShapeBody(currentShape, rowIndex, cellIndex)) { 
-        state.render = 'next';
+        state.render.value = 'next';
       } else if (cell === 1) {
         state.gameField[position].classList.add('bg-cyan');
         state.currentCells.push(position);
         tempCellsContainer.push(position);
 
         if (thisIsLastLine(position, state) || nextLineCellisTaken(position, state)) {
-          state.render = 'next';
+          state.render.value = 'next';
         } 
       }
     });
   });
-  // console.log(state.currentEmpties)
+
   if (layout === 'multiplayer') {
-    watchedState.shapeCells = tempCellsContainer;
+    matchVisualsView.shapeCells = tempCellsContainer;
   }
-  // переделать через watched state
-  switch (state.render) {
+
+  switch (state.render.value) {
     case 'start':
       state.shapePosition += 10;
-      setTimeout(() => startRender(state, watchedState), state.fallSpeed)
+      setTimeout(() => startRender(state, renderView, matchVisualsView), state.fallSpeed)
       break;
     case 'next':
-      stopRender(state, watchedState);
+      stopRender(state, renderView, matchVisualsView);
       break;
     case 'pause':
       break;
@@ -109,29 +105,27 @@ const startRender = (state, watchedState) => {
 };
 
 
-const stopRender = (state, watchedState) => {
+export function stopRender(state, renderView, matchVisualsView) {
   const tempTakenContainer = [];
 
-  state.gameField.forEach((cell, i) => {
-    if (cell.classList.contains('bg-cyan')) {
-      cell.classList.add('taken');
-      tempTakenContainer.push(i);
-    }
+  state.currentCells.forEach((cell) => {
+      state.gameField[cell].classList.add('taken');
+      tempTakenContainer.push(cell);
   });
   if (tempTakenContainer.length !== 0 && state.layout === 'multiplayer') {
-    watchedState.takenCells.push(...tempTakenContainer);
+    matchVisualsView.takenCells.push(...tempTakenContainer);
   }
 
   const current = state.gameField.reduce((acc, cell) => {
     if (acc[acc.length - 1].length === 10) acc.push([]);
-    acc[acc.length - 1].push(cell);
+      acc[acc.length - 1].push(cell);
     return acc;
   }, [[]]);
 
   const lines = [];
 
   current.forEach((line) => {
-    const lineup = line.filter((cell) => cell.classList.contains('taken'))
+    const lineup = line.filter((cell) => cell.classList.contains('taken'));
     if (lineup.length === 10) lines.push(lineup)
   });
   lines.forEach((line) => {
@@ -144,7 +138,7 @@ const stopRender = (state, watchedState) => {
     });
 
     state.gameField = Array.from(state.fieldContainer.querySelectorAll('.cell'));
-    watchedState.score += 1000;
+    matchVisualsView.score += 1000;
 
     const newTakenCells = [];
     state.gameField.forEach((cell, i) => {
@@ -154,16 +148,16 @@ const stopRender = (state, watchedState) => {
       state.socket.emit('newLine', { 
         cells: cellsToDelete,
         id: state.player,
-        score: state.score,
+        score: state.visuals.score,
       });
-      watchedState.takenCells = newTakenCells;
+      matchVisualsView.takenCells = newTakenCells;
     }
   });
 
-  watchedState.render = 'start';
+  renderView.value = 'start';
 };
 
-const renderLayout = ({ layout, players, gameOwner }) => {
+export function renderLayout({ layout, players, gameOwner }) {
   const mainContainer = document.querySelector('.main-container');
   const fieldsContainer = document.querySelector('.fields-container');
 
@@ -176,9 +170,9 @@ const renderLayout = ({ layout, players, gameOwner }) => {
       fieldsContainer.append(menu('menu-sp'));
       return;
   }
-}
+};
 
-const renderMessage = (messages, currentPlayer) => {
+export function renderMessage(messages, currentPlayer) {
   const chatContainer = document.querySelector('.chat-room');
   const [{ message, player }, ...rest] = messages.reverse();
 
@@ -191,13 +185,4 @@ const renderMessage = (messages, currentPlayer) => {
   `
   chatContainer.append(div);
   updateOverflow(chatContainer);
-}
-
-export { 
-  renderEndGame,
-  stopRender,
-  startRender,
-  renderCell,
-  renderLayout,
-  renderMessage,
 };

@@ -1,4 +1,4 @@
-import { createCell } from "../utilityFNs.js";
+import { createCell } from "../lib/utilityFNs.js";
 
 export default (id, mode) => {
   const field = document.createElement('div');
