@@ -2,7 +2,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import http from 'http';
 import cors from 'cors';
-import { makeid } from '../frontend/utilityFNs.js';
+import { makeid } from '../frontend/lib/utilityFNs.js';
 
 const isProduction = process.env.NODE_ENV == 'production';
 const PORT = process.env.PORT ? process.env.PORT : 3000
