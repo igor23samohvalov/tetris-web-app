@@ -1,6 +1,6 @@
-import { isGameOver, getPosition, updateOverflow } from './lib/utilityFNs.js';
-import menu from './components/menu.js';
-import multiplayerMenu from './components/multiplayerMenu.js';
+import { isGameOver, getPosition, updateOverflow } from './utilityFNs.js';
+import menu from '../components/menu.js';
+import multiplayerMenu from '../components/multiplayerMenu.js';
 
 const rowIsEmpty = (row) => !row.includes(1);
 const positionIsOutOfField = (position, state) => !state.gameField[position];

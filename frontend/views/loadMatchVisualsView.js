@@ -1,6 +1,8 @@
 import onChange from 'on-change';
 
-export default (state, scoreTag) => onChange(state.visuals, (path, value) => {
+export default (state) => onChange(state.visuals, (path, value) => {
+  const scoreTag = document.querySelector(`.score-${state.player}`);
+
   switch (path) {
     case 'score':
       scoreTag.textContent = `SCORE: ${value}`;

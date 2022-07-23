@@ -1,8 +1,12 @@
 import onChange from 'on-change';
-import { startRender, renderEndGame } from '../render.js';
+import { startRender, renderEndGame } from '../lib/render.js';
 
 
-export default (state, matchVisualsView, startButton) => {
+export default (state, matchVisualsView) => {
+  const startButton = state.gameOwner
+    ? document.querySelector('#startButton')
+    : document.querySelector('.chat-users');
+
   const renderView = onChange(state.render, (_, value) => {
     switch (value) {
       case 'start':

@@ -1,4 +1,4 @@
-import shapes from '../shapes.js';
+import shapes from '../lib/shapes.js';
 import { getRndInd } from '../lib/utilityFNs.js';
 
 
